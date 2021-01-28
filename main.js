@@ -4,6 +4,8 @@ leftwristX=0
 leftwristY=0
 rightwristX=0
 rightwristY=0
+rightwristscore=0
+leftwristscore=0
 
 function preload() {
  song=loadSound("music.mp3");   
@@ -22,13 +24,11 @@ function modelLoaded() {
     console.log("posenet is initialized");
 }
 
-function draw() {
-    image(video,0,0,400,300);
-}
 
 function gotPoses(results) {
  if(results.length>0) {
      console.log(results);
+     leftwristscore=results[0].pose.keypoints[9].score;
      leftwristX=results[0].pose.leftWrist.x;
      leftwristY=results[0].pose.leftWrist.y;
      rightwristX=results[0].pose.rightWrist.x;
@@ -40,6 +40,23 @@ function gotPoses(results) {
      console.log("right wrist Y=" + rightwristY);
  }
 }
+
+function draw() {
+    image(video,0,0,400,300);
+
+    fill("red");
+    stroke("black");
+    if(leftwristscore>0.2) {
+    circle(leftwristX,leftwristY,20);
+    numberleftwristY=Number(leftwristY);
+    removedecimals=floor(numberleftwristY);
+    volume=removedecimals/300;
+    song.setVolume(volume);
+    document.getElementById("volume").innerHTML="volume:" + volume;
+    }
+
+}
+
 
 function play() {
     song.play();
